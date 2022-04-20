@@ -1,0 +1,63 @@
+WITH days AS (
+        SEL
+            max(lot_placement_date) as max_date,
+            add_months(max_date,-1) as days_from,
+            trunc(max_date - 140,'IW') as weeks_from,
+			trunc(add_months(max_date,-12),'mon') as months_from
+	FROM PRD_RDS_V.MARKET_TELE2
+	where lot_placement_date >= Current_Date - 10
+	)
+	
+	
+sel
+	Cast('daily' AS VARCHAR(255)) AS period,   
+	report_date AS report_date,
+	--BRANCH_ID,
+	CASE 
+		WHEN  tp_name_commercial  IN ('Классический','Мой разговор','Мой онлайн','Безлимит','Везде онлайн')
+			THEN  tp_name_commercial
+		WHEN  tp_name_commercial  IN ('Лайт', 'Мой Tele2','Лайт/Мой Tele2')
+			THEN  tp_name_commercial
+		WHEN  tp_name_commercial  IN ('Мой онлайн +', 'Мой онлайн+')
+			THEN  tp_name_commercial
+		WHEN  tp_name_commercial  IN ('Везде онлайн +', 'Везде онлайн+')
+			THEN  'Везде онлайн+' 
+		ELSE  'Other' 
+		END AS  name_report,
+	case TP_TARIFICATION_TYPE when 'Bundle' then 'Bundle' else 'PAYG' end as bundle_or_not,
+	sum(FLASH_ACTIVE_COUNT)
+from PRD_RDS_V.PRODUCT_AGG_D_SAP_BO
+where 1=1
+	and CALC_PLATFORM_ID in (-1,1,2)
+	and report_date >= ANY(SEL days_from FROM days)
+group by 2,3,4
+
+
+
+
+UNION ALL
+
+SELECT	
+    Cast('weekly' AS VARCHAR(255)) AS period,
+	Trunc(report_date,'IW') AS report_date,
+	--BRANCH_ID,
+	CASE 
+		WHEN  tp_name_commercial  IN ('Классический','Мой разговор','Мой онлайн','Безлимит','Везде онлайн')
+			THEN  tp_name_commercial
+		WHEN  tp_name_commercial  IN ('Лайт', 'Мой Tele2','Лайт/Мой Tele2')
+			THEN  tp_name_commercial
+		WHEN  tp_name_commercial  IN ('Мой онлайн +', 'Мой онлайн+')
+			THEN  tp_name_commercial
+		WHEN  tp_name_commercial  IN ('Везде онлайн +', 'Везде онлайн+')
+			THEN  'Везде онлайн+' 
+		ELSE  'Other' 
+		END AS  name_report,
+	case TP_TARIFICATION_TYPE when 'Bundle' then 'Bundle' else 'PAYG' end as bundle_or_not,
+	sum(FLASH_ACTIVE_COUNT)
+from PRD_RDS_V.PRODUCT_AGG_D_SAP_BO
+where 1=1
+	and CALC_PLATFORM_ID in (-1,1,2)
+	and report_date >= ANY(SEL weeks_from FROM days)
+group by 2,3,4
+
+
