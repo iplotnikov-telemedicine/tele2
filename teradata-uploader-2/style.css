@@ -1,0 +1,42 @@
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+label:empty {display: none;}
+
+.css-142q1tj.edgvbvh1 {visibility: hidden;}
+
+button[kind="primary"], button[kind="formSubmit"] {
+    width: 100%;
+    height: 100%;
+}
+
+section > div {
+    padding-right: 100;
+    padding-left: 100;
+    
+}
+
+[data-testid="stForm"] {
+    border: 0;
+}
+
+button[title="View fullscreen"] {
+    visibility: hidden;
+}
+
+
+[data-testid="stFileUploadDropzone"] {
+    background-color: #1b1d22;
+}
+
+
+div[class="css-1gesh4n e1fqkh3o1"] {
+    padding-top: 3em;
+}
+
+
+div[class="ReactVirtualized__Grid table-bottom-left"],
+div[class="ReactVirtualized__Grid table-top-right"],
+div[class="ReactVirtualized__Grid"] {
+        border: 1em regular #1f2229;
+        background-color: #1f2229;
+    }
