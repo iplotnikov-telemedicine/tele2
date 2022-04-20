@@ -1,0 +1,67 @@
+sel
+		cast('seller' as varchar(10)) as who,
+		branch_id_seller as branch_id,
+		lot_placement_date as report_date,
+		traffic_type,
+		sum(lot_volume) as lot_volume
+	from PRD_RDS_V.MARKET_TELE2
+	where lot_placement_date >= <Parameters.ДАТА С для экстракта>
+	group by 2,3,4
+	
+	union all
+	
+	sel
+		cast('purchaser' as varchar(10)) as who,
+		branch_id_purchaser as branch_id,
+		lot_purchase_date as report_date,
+		traffic_type,
+		sum(lot_volume) as lot_volume
+	from PRD_RDS_V.MARKET_TELE2
+	where lot_purchase_date >= <Parameters.ДАТА С для экстракта>
+	group by 2,3,4
+
+
+
+
+
+
+
+
+SELECT	
+	agg.report_date,
+	agg.branch_id,
+	sum(agg.FLASH_ACTIVE_COUNT) AS subs_count
+from PRD_RDS_V.PRODUCT_AGG_D_SAP_BO agg
+inner join PRD2_DIC_V.PRICE_PLAN pp 
+	on agg.tp_id = pp.tp_id
+where 1=1
+	and CALC_PLATFORM_ID in (-1,1,2)
+	and pp.bundle_flag = 1
+	and agg.report_date >= current_date - 70
+GROUP BY 1,2
+
+
+
+
+
+	sel
+		cast('seller' as varchar(10)) as who,
+		branch_id_seller as branch_id,
+		lot_placement_date as report_date,
+		traffic_type,
+		sum(lot_volume) as lot_volume
+	from PRD_RDS_V.MARKET_TELE2
+	where lot_placement_date >= current_date - 70
+	group by 2,3,4
+	
+	union all
+	
+	sel
+		cast('purchaser' as varchar(10)) as who,
+		branch_id_purchaser as branch_id,
+		lot_purchase_date as report_date,
+		traffic_type,
+		sum(lot_volume) as lot_volume
+	from PRD_RDS_V.MARKET_TELE2
+	where lot_purchase_date >= current_date - 70
+	group by 2,3,4
